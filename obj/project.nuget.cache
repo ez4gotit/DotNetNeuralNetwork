@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "lCgczL0V3bXNRqoYryWUs0cpILhtbk6sDrnGY4eecY2xaFn6spGR38hVHDCHkKnpKwwtL227ToZrC5IJQ1tmbw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\NeuralNetwork.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mdudi\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.25\\microsoft.netcore.app.host.win-x64.3.1.25.nupkg.sha512"
+  ],
+  "logs": []
+}
