@@ -108,7 +108,7 @@ namespace NeuralNetwork.Classes
 
 
 
-        ValueTuple 
+        
         public void Setup()
         {
             Output = new Neuron[size[size.Length - 1]];
