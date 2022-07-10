@@ -9,6 +9,7 @@ namespace NeuralNetwork
         static NeuralNetworkTemplate neuralNetwork = new Classes.NeuralNetworkTemplate(size);
         static void Main(string[] args)
         {
+            neuralNetwork.XMLPath = @"C:\Users\user\Documents\GitHub\NeuralNetwork\XMLFile1.xml";
             neuralNetwork.Setup();
             
             Console.WriteLine(neuralNetwork.ProcessValues(neuralNetwork.Neurons, input)[0]);

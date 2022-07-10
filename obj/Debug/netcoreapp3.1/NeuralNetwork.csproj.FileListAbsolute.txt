@@ -12,3 +12,17 @@ C:\Users\mdudi\source\repos\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.
 C:\Users\mdudi\source\repos\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.dll
 C:\Users\mdudi\source\repos\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.pdb
 C:\Users\mdudi\source\repos\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.genruntimeconfig.cache
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.exe
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.deps.json
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.runtimeconfig.json
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.runtimeconfig.dev.json
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.dll
+C:\Users\user\Documents\GitHub\NeuralNetwork\bin\Debug\netcoreapp3.1\NeuralNetwork.pdb
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.csproj.AssemblyReference.cache
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.AssemblyInfoInputs.cache
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.AssemblyInfo.cs
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.dll
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.pdb
+C:\Users\user\Documents\GitHub\NeuralNetwork\obj\Debug\netcoreapp3.1\NeuralNetwork.genruntimeconfig.cache

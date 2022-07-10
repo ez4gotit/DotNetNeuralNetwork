@@ -5,32 +5,40 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace NeuralNetwork.Classes
+namespace NeuralNetwork.Classes 
 {
     public enum LayerType{Input,Output, Hiden }
 
 
-    struct NeuronLayer
+
+    public struct NeuronLayer
     {
         public NeuralNetworkTemplate.Neuron[] neuron;
         public int[] size;
 
 
-        public void WriteXML(string path, NeuronLayer[] neuronLayers)
+        public static void WriteXML(string path, NeuronLayer[] neuronLayers)
         {
             Stream stream = File.OpenWrite(path);
             XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
             serializer.Serialize(stream, neuronLayers);
         }
-        public NeuronLayer[] ReadXML(string path)
+        public static NeuronLayer[] ReadXML(string path)
         {
+            
             Stream stream = File.OpenRead(path);
             XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
             return (NeuronLayer[])serializer.Deserialize(stream);
         }
     }
 
+    public struct Dataset
+    {
+        public double[] input;
+        public double[] output;
     
+    }
+
 
     struct Vector2
     {
@@ -68,10 +76,11 @@ namespace NeuralNetwork.Classes
         }
     }
 
+     
 
     public struct Connection  //Synapse
     {
-
+        /*public double biasVal;*/
         public int link; // link to array of previous layer
         public double weight;
     }
@@ -85,11 +94,12 @@ namespace NeuralNetwork.Classes
         
         public Neuron[] Output { get; private set; }
         public int[] size;
+        public Dataset[] dataSet;
 
         Random random = new Random();
         public Neuron[,] Neurons;
 
-        
+        public string XMLPath;
 
 
         public NeuralNetworkTemplate(int[] _size)
@@ -119,11 +129,18 @@ namespace NeuralNetwork.Classes
 
             }
             Neurons = new Neuron[size.Length, maxVal];
+            NeuronLayer[] neuronLayers = new NeuronLayer[size.Length];
             for (int i = 0; i < size.Length; i++)
             {
                 for (int n = 0; n < size[i]; n++)
                 {
-                    if (i == 0) Neurons[i, n] = new Neuron(LayerType.Input);
+                    neuronLayers[i].neuron = new Neuron[maxVal];
+                    if (i == 0)
+                    {
+                        Neurons[i, n] = new Neuron(LayerType.Input);
+                        
+                    }
+
                     else if (i >= 1 && i < size.Length - 1)
                     {
                         Neurons[i, n] = new Neuron(LayerType.Hiden);
@@ -138,11 +155,14 @@ namespace NeuralNetwork.Classes
                         Neurons[i, n].connections = new Connection[size[i - 1]];
                         ConnectRandomly(Neurons[i, n], size[i - 1]);
                     }
+                    neuronLayers[i].neuron[n] = Neurons[i, n];
+                    
                 }
             }
+            NeuronLayer.WriteXML(XMLPath, neuronLayers);
 
         }
-
+        #region ConnectRandomly
 
         void ConnectRandomly(Neuron neuron, int previousLayerSize, int density = 70)
         {
@@ -157,7 +177,9 @@ namespace NeuralNetwork.Classes
 
             }
         }
-
+        #endregion
+ 
+        #region ProcessValues
         public double[] outputValues;
         public double[] ProcessValues(Neuron[,] _Neurons,double[] inputValues)
         {
@@ -188,13 +210,33 @@ namespace NeuralNetwork.Classes
             return outputValues;
         }
 
+        #endregion
 
-        void BackPropagation()
+        public void Propogation(Dataset[] dataSet)
+        {
+            for (int i = 0; i < dataSet.Length; i++)
             {
-
+                EMS(dataSet[0].output, ProcessValues(Neurons, dataSet[0].input));
             }
 
+        }
+        public void BackPropagation()
+            {
+            
+
+
+
+
+            /*NeuronLayer.WriteXML(XMLPath,);*/
+        }
+
         #region ActivationFunctions
+
+        double SigmaDifferential(double x)
+        {
+            
+            return (Math.Pow(Math.E, -x)/Math.Pow((1+ Math.Pow(Math.E, -x)),2));
+        }
         double activationSigma(double x)
         {
             return (1/(1+Math.Pow(Math.E,-x)));
@@ -203,10 +245,33 @@ namespace NeuralNetwork.Classes
 
         double activationHyperbolic(double x)
         {
-            return (Math.Pow(Math.E, 2*x)-1) / (Math.Pow(Math.E, 2 * x) + 1);
+            return (2/(1+ Math.Pow(Math.E, -2*x)))-1);
+           // return (Math.Pow(Math.E, 2*x)-1) / (Math.Pow(Math.E, 2 * x) + 1);
+        }
+
+        double HyperbolicDifferential(double x)
+        {
+            return (4*Math.Pow(Math.E,-2*x)/Math.Pow(1+Math.Pow(Math.E, -2*x), 2));
         }
 
         #endregion ActivationFunctions
+
+
+        #region EMS Func
+
+        public double EMS(double[] awaitValue, double[] resultValue)
+        {
+            double error = 0;
+            for(int i = 0; i < size[size.Length-1], i++)
+            {
+                error += MathF.Pow((float)(resultValue[i] - awaitValue[i]), 2);
+            }
+            return error/2;
+        }
+
+        #endregion
+
+
 
 
         public class Neuron
