@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Documents\\GitHub\\NeuralNetwork\\NeuralNetwork.csproj": {}
+    "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\NeuralNetwork.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Documents\\GitHub\\NeuralNetwork\\NeuralNetwork.csproj": {
+    "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\NeuralNetwork.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\NeuralNetwork\\NeuralNetwork.csproj",
+        "projectUniqueName": "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\NeuralNetwork.csproj",
         "projectName": "NeuralNetwork",
-        "projectPath": "C:\\Users\\user\\Documents\\GitHub\\NeuralNetwork\\NeuralNetwork.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Documents\\GitHub\\NeuralNetwork\\obj\\",
+        "projectPath": "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\NeuralNetwork.csproj",
+        "packagesPath": "C:\\Users\\mdudi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mdudi\\source\\repos\\NeuralNetwork\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mdudi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -54,7 +54,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
         }
       }
     }

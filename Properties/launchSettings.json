@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NeuralNetwork": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

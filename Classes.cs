@@ -11,27 +11,7 @@ namespace NeuralNetwork.Classes
 
 
 
-    public struct NeuronLayer
-    {
-        public NeuralNetworkTemplate.Neuron[] neuron;
-        public int[] size;
-
-
-        public static void WriteXML(string path, NeuronLayer[] neuronLayers)
-        {
-            Stream stream = File.OpenWrite(path);
-            XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
-            serializer.Serialize(stream, neuronLayers);
-        }
-        public static NeuronLayer[] ReadXML(string path)
-        {
-            
-            Stream stream = File.OpenRead(path);
-            XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
-            return (NeuronLayer[])serializer.Deserialize(stream);
-        }
-    }
-
+   
     public struct Dataset
     {
         public double[] input;
@@ -91,15 +71,106 @@ namespace NeuralNetwork.Classes
 
     public class NeuralNetworkTemplate
     {
-        
+
+
+
+
+        NeuronLayer[] layers;
+
+
+
         public Neuron[] Output { get; private set; }
-        public int[] size;
+        public static int[] size;
         public Dataset[] dataSet;
 
         Random random = new Random();
         public Neuron[,] Neurons;
 
         public string XMLPath;
+
+
+
+
+        static int maxLayerSize = 0;
+        #region NeuronLayer
+
+        public struct NeuronLayer
+        {
+            public NeuralNetworkTemplate.Neuron[] neuron;
+            
+            public static NeuronLayer[] toNeuronLayers(NeuralNetworkTemplate.Neuron[,] neurons)
+            {
+                NeuronLayer[] neuronLayers = new NeuronLayer[size.Length];
+                
+                for (int i = 0; i < size.Length; i++)
+                {
+                    if (size[i] > maxLayerSize) maxLayerSize = size[i];
+                }
+
+                for (int i = 0; i < neuronLayers.Length; i++)
+                {
+
+                    neuronLayers[i].neuron = new Neuron[maxLayerSize];
+                }
+                for (int i = 0; i < neuronLayers.Length; i++)
+                {
+
+                    for (int n = 0; n < maxLayerSize; n++)
+                        neuronLayers[i].neuron[n] = neurons[i, n];
+                }
+                return neuronLayers;
+            }
+
+            public static Neuron[,] toNeurons(NeuronLayer[] _layers)
+            {
+                Neuron[,] _neurons = new Neuron[size.Length, maxLayerSize];
+
+                for(int l =0; l< size.Length; l++)
+                {
+                    for (int n = 0; n < maxLayerSize; n++)
+                    {
+                        _neurons[l,n] = _layers[l].neuron[n];
+                    }
+                }
+                return _neurons;
+            }
+
+            public static void WriteXML(string path, NeuronLayer[] neuronLayers)
+            {
+          
+                Stream stream = File.OpenWrite(path);
+                XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
+                  serializer.Serialize(stream, neuronLayers);
+                stream.Close();
+            }
+            public static NeuronLayer[] ReadXML(string path)
+            {
+                NeuronLayer[] _layers;
+                Stream stream = File.OpenRead(path);
+                XmlSerializer serializer = new XmlSerializer(typeof(NeuronLayer[]));
+                _layers = (NeuronLayer[])serializer.Deserialize(stream);
+                stream.Close();
+                return _layers;
+                
+            }
+        }
+
+
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public NeuralNetworkTemplate(int[] _size)
@@ -110,14 +181,28 @@ namespace NeuralNetwork.Classes
                 Debug.WriteLine("<<< catch : int[] _size : Network might consist of three or more layers");
                 Console.WriteLine("<<< catch : int[] _size : Network might consist of three or more layers");
             }
+            for(int i = 0; i< size.Length; i++)
+            {
+                if (size[i] > maxLayerSize) maxLayerSize = size[i];
+            }
         }
 
 
 
 
 
+        public void SaveToXML(string path)
+        {
 
+            layers = NeuronLayer.toNeuronLayers(Neurons);
+            NeuronLayer.WriteXML(path, layers);
+            
+        }
 
+        public void LoadFromXML(string path)
+        {
+            Neurons = NeuronLayer.toNeurons(NeuronLayer.ReadXML(path));
+        }
         
         public void Setup()
         {
@@ -138,7 +223,8 @@ namespace NeuralNetwork.Classes
                     if (i == 0)
                     {
                         Neurons[i, n] = new Neuron(LayerType.Input);
-                        
+                        Neurons[i, n].connections = new Connection[1];
+                        Neurons[i, n].connections[0].weight = 0;
                     }
 
                     else if (i >= 1 && i < size.Length - 1)
@@ -146,7 +232,7 @@ namespace NeuralNetwork.Classes
                         Neurons[i, n] = new Neuron(LayerType.Hiden);
                         Neurons[i, n].connections = new Connection[size[i - 1]];
                         ConnectRandomly(Neurons[i, n], size[i - 1]);
-
+                        
                     }
                     else
                     {
@@ -154,13 +240,14 @@ namespace NeuralNetwork.Classes
                         Output[n] = Neurons[i, n];
                         Neurons[i, n].connections = new Connection[size[i - 1]];
                         ConnectRandomly(Neurons[i, n], size[i - 1]);
+                        
                     }
                     neuronLayers[i].neuron[n] = Neurons[i, n];
                     
                 }
             }
             NeuronLayer.WriteXML(XMLPath, neuronLayers);
-
+            layers = neuronLayers;
         }
         #region ConnectRandomly
 
@@ -168,6 +255,11 @@ namespace NeuralNetwork.Classes
         {
             for (int i = 0; i < previousLayerSize; i++)
             {
+
+                
+                if (neuron.type == LayerType.Input) neuron.connections[i].weight = 0;
+
+
                 if (random.Next(100) <= density)
                 {
                     neuron.connections[i].link = i;
@@ -212,22 +304,51 @@ namespace NeuralNetwork.Classes
 
         #endregion
 
-        public void Propogation(Dataset[] dataSet)
+        public void Propogation(Dataset[] dataSet, double h_coefficient, double accuracy, int repeats = 100000)
         {
-            for (int i = 0; i < dataSet.Length; i++)
+            double[] errors;
+            int step= 0;
+            for (int counter = 0; counter < dataSet.Length; counter++)
             {
-                EMS(dataSet[0].output, ProcessValues(Neurons, dataSet[0].input));
+                errors = OutputError(dataSet[counter].output, ProcessValues(Neurons, dataSet[counter].input));
+                Console.WriteLine($"{step} : {outputValues[0]}");
+
+                BackPropagation(errors, h_coefficient, counter);
+                for (int a = 0, i = 0; i < errors.Length; i++)
+                { if ((errors[i] < accuracy && a >= errors.Length) || repeats == step) return; 
+                    a++; }
+                step++;
+                Propogation(dataSet,h_coefficient,accuracy,repeats);  
+
             }
 
         }
-        public void BackPropagation()
+        public void BackPropagation(double[] errors ,double h_coefficient, int counter)
             {
-            
+            NeuronLayer[] Layers = new NeuronLayer[size.Length];
+            for (int err = 0; err < errors.Length; err++)
+            {
+                for (int l = size.Length - 1; l > 0; l--)
+                {
+                    for (int n = 0; n < size[l]; n++)
+                    {
+                        for (int c = 0; c < Neurons[l, n].connections.Length; c++)
+                        {
+
+                            Neuron currentNeuron = Neurons[l, n];
+                            if ((object)currentNeuron.connections[c].link != null && dataSet != null)
+                            {
+                                if (l != 0) currentNeuron.connections[c].weight = currentNeuron.connections[c].weight + h_coefficient * errors[err] * (currentNeuron.value) * (1 - currentNeuron.value) * Math.Log((double)(1 / Neurons[l - 1, c].value) - 1);
+                                else currentNeuron.connections[c].weight = currentNeuron.connections[c].weight + h_coefficient * errors[err] * (currentNeuron.value) * (1 - currentNeuron.value) * Math.Log((double)(1 / (dataSet[counter].input[c])) - 1);
+                            }
+                        }
+                    }
+
+                }
+            }
 
 
-
-
-            /*NeuronLayer.WriteXML(XMLPath,);*/
+            NeuronLayer.WriteXML(XMLPath, NeuronLayer.toNeuronLayers(Neurons));
         }
 
         #region ActivationFunctions
@@ -245,7 +366,7 @@ namespace NeuralNetwork.Classes
 
         double activationHyperbolic(double x)
         {
-            return (2/(1+ Math.Pow(Math.E, -2*x)))-1);
+            return (2/(1+ Math.Pow(Math.E, -2*x))-1);
            // return (Math.Pow(Math.E, 2*x)-1) / (Math.Pow(Math.E, 2 * x) + 1);
         }
 
@@ -256,17 +377,29 @@ namespace NeuralNetwork.Classes
 
         #endregion ActivationFunctions
 
+        #region Error Function
+
+        double[] OutputError(double[] awaitValue, double[] resultValue)
+        {
+            double[] error = new double[awaitValue.Length];
+            for (int i = 0; i < size[size.Length - 1]; i++)
+            {
+                error[i] = (float)(resultValue[i] - awaitValue[i]);
+            }
+            return error;
+        }
+        #endregion
 
         #region EMS Func
 
-        public double EMS(double[] awaitValue, double[] resultValue)
+        public double[] FirstEMS(double[] awaitValue, double[] resultValue)
         {
-            double error = 0;
-            for(int i = 0; i < size[size.Length-1], i++)
+            double[] error = new double[awaitValue.Length];
+            for(int i = 0; i < size[size.Length-1]; i++)
             {
-                error += MathF.Pow((float)(resultValue[i] - awaitValue[i]), 2);
+                error[i] = MathF.Pow((float)(resultValue[i] - awaitValue[i]), 2)/2;
             }
-            return error/2;
+            return error;
         }
 
         #endregion
@@ -279,7 +412,7 @@ namespace NeuralNetwork.Classes
             public double value = 0;
 
             public Connection[] connections;
-            LayerType type;
+            public LayerType type;
             public Neuron(LayerType _type)
             {
                 type = _type;
