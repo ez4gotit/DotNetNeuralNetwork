@@ -1,5 +1,6 @@
 ﻿using System;
 using NeuralNetwork.Lightweight;
+using NeuralNetwork.LightWeight.Tools;
 
 class Program
 {
@@ -16,7 +17,10 @@ class Program
         trainingOutputs[1] = new double[] { 0.6};
         trainingOutputs[2] = new double[] { 1};
         LWNeuralNetwork network = new LWNeuralNetwork(3,hiddenSizes,1,LWNeuralNetwork.sigmoidActivationFunction);
-        network.BackPropagationTrain(trainingInputs,trainingOutputs,1000000, 0.01);
+        //network.BackPropagationTrain(trainingInputs,trainingOutputs,1000000, 0.01);
+        //LWTools.SerializeToJson(network, "gg.json");
+        //LWTools.SerializeNetworkToBinaryFile(network, "test1");
+        //network = LWTools.DeserializeFromJson("gg.json");
         double[] newInput = Array.ConvertAll(Console.ReadLine().Split(' '),Double.Parse);
         Console.WriteLine(network.FeedForward(newInput)[0]);
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+
 namespace NeuralNetwork.Lightweight
 {
     class LWNNTemplate
@@ -148,7 +150,7 @@ namespace NeuralNetwork.Lightweight
 
 
 
-    public class LWNeuralNetwork
+    [Serializable]public class LWNeuralNetwork
     {
         private int inputSize;
         private int[] hiddenSizes;
@@ -163,8 +165,12 @@ namespace NeuralNetwork.Lightweight
 
         private Func<double, double> activationFunction;
 
+        public readonly int InputSize;
+        public LWNeuralNetwork()
+        { }
         public LWNeuralNetwork(int inputSize, int[] hiddenSizes, int outputSize, Func<double, double> activationFunction)
         {
+            InputSize = inputSize;
             this.inputSize = inputSize;
             this.hiddenSizes = hiddenSizes;
             this.outputSize = outputSize;
