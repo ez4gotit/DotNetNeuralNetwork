@@ -1,5 +1,4 @@
 ﻿using System;
-using NeuralNetwork.Classes;
 using NeuralNetwork.Lightweight;
 
 class Program
