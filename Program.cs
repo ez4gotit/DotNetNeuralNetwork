@@ -17,7 +17,8 @@ class Program
         trainingOutputs[1] = new double[] { 0.6};
         trainingOutputs[2] = new double[] { 1};
         LWNeuralNetwork network = new LWNeuralNetwork(3,hiddenSizes,1,LWNeuralNetwork.sigmoidActivationFunction);
-        //network.BackPropagationTrain(trainingInputs,trainingOutputs,1000000, 0.01);
+        network.BackPropagationTrain(trainingInputs,trainingOutputs,10000, 0.01);
+        //network.StochasticBackPropagationTrain(trainingInputs, trainingOutputs, 10000, 0.01);
         //LWTools.SerializeToJson(network, "gg.json");
         //LWTools.SerializeNetworkToBinaryFile(network, "test1");
         //network = LWTools.DeserializeFromJson("gg.json");
